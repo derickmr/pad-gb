@@ -201,6 +201,6 @@ int main(int argc, char* argv[])
     }
         
   fclose(fp);
-  gfree(colorsToBeWrittenOnFile);
+  free(colorsToBeWrittenOnFile);
   return 0;
 }
