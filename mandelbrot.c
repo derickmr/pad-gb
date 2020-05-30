@@ -50,9 +50,7 @@ void *calculate_mandelbrot(void *arg){
 
     int yStart = yres * threadIndex;
     int yEnd = yres * (threadIndex + 1);
-    
-    printf ("xres: %d, yres: %d", xres, yres);
-    
+        
     /* Precompute pixel width and height. */
      double dx=(xmax-xmin)/xres;
      double dy=(ymax-ymin)/yres;
@@ -62,7 +60,9 @@ void *calculate_mandelbrot(void *arg){
     int i,j; /* Pixel counters */
     int k; /* Iteration counter */
     
-    for (j = yStart; j < counterEnd && counter < counterEnd; j++) {
+    printf("yStart: %d, yEnd: %d, counter: %d, counterEnd: %d \n", yStart, yEnd, counter, counterEnd);
+    
+    for (j = yStart; j < yEnd && counter < counterEnd; j++) {
       y = ymax - j * dy;
       for(i = 0; i < xres; i++) {
       
