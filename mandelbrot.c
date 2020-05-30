@@ -156,12 +156,12 @@ int main(int argc, char* argv[])
         arguments[i].ymin = ymin;
         arguments[i].ymax = ymax;
         arguments[i].maxiter = maxiter;
-        arguments[i].threadCounter = (arraySize/numThreads) * i;
+        arguments[i].arrayCounter = (arraySize/numThreads) * i;
         arguments[i].threadStart = (yres/numThreads) * i;
         arguments[i].threadEnd = (yres/numThreads) * (i+1);
     }
     
-    arguments[numThreads-1] += yres&numThreads;
+    arguments[numThreads-1].threadEnd += yres&numThreads;
 
     for (i = 0; i < numThreads; i++){
         pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i]));
