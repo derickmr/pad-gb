@@ -27,6 +27,7 @@
 #include <stdint.h>
 #include <pthread.h>
 #define NUMTHREADS 4
+#define COLOR_SIZE 6
 
 unsigned char *colorsToBeWrittenOnFile;
 
@@ -90,7 +91,7 @@ void *calculate_mandelbrot(void *arg){
         if (k >= maxiter) {
           /* interior */
             int colorCounter;
-            for (colorCounter = 0; colorCounter < 6; colorCounter++){
+            for (colorCounter = 0; colorCounter < COLOR_SIZE; colorCounter++){
                 colorsToBeWrittenOnFile[counter++] = 0;
             }
           
@@ -135,7 +136,7 @@ int main(int argc, char* argv[])
   int xres = atoi(argv[6]);
   int yres = (xres*(ymax-ymin))/(xmax-xmin);
     
-  int arraySize = yres * xres * 6;
+  int arraySize = yres * xres * COLOR_SIZE;
     
   colorsToBeWrittenOnFile = (unsigned char *)malloc(arraySize * sizeof(unsigned char));
     
@@ -187,13 +188,13 @@ int main(int argc, char* argv[])
         pthread_join(threads[i], NULL);
     }
         
-    unsigned char color[6];
+    unsigned char color[COLOR_SIZE];
     
     for (i = 0; i < arraySize; ){
-        for (j = 0; j < 6; j++){
+        for (j = 0; j < COLOR_SIZE; j++){
                 color[j] = colorsToBeWrittenOnFile[i++];
         }
-        fwrite(color, 6, 1, fp);
+        fwrite(color, COLOR_SIZE, 1, fp);
     }
         
   fclose(fp);
