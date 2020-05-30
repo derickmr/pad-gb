@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
         //fwrite (black, 6, 1, fp);
           int colorCounter;
           for (colorCounter = 0; colorCounter < rows; colorCounter++){
-              colorsToBeWrittenOnFil[counter][colorCounter] = 0;
+              colorsToBeWrittenOnFile[counter][colorCounter] = 0;
           }
         
       }
