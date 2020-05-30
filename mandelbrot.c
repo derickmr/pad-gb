@@ -70,9 +70,10 @@ int main(int argc, char* argv[])
   int k; /* Iteration counter */
     
   int counter = 0;
-    int arraySize = yres * xres * 6;
+    int rows = yres * xres;
     
-  unsigned char * colorsToBeWrittenOnFile  = (unsigned char *)malloc(arraySize * sizeof(unsigned char));
+    unsigned char colorsToBeWrittenOnFile[rows][6];
+    
 
   for (j = 0; j < yres; j++) {
     y = ymax - j * dy;
@@ -96,8 +97,8 @@ int main(int argc, char* argv[])
         //const unsigned char black[] = {0, 0, 0, 0, 0, 0};
         //fwrite (black, 6, 1, fp);
           int colorCounter;
-          for (colorCounter = 0; colorCounter < 6; colorCounter++){
-              colorsToBeWrittenOnFile[counter++] = 0;
+          for (colorCounter = 0; colorCounter < rows; colorCounter++){
+              colorsToBeWrittenOnFil[counter][colorCounter] = 0;
           }
         
       }
@@ -111,18 +112,19 @@ int main(int argc, char* argv[])
         color[4] = k >> 8;
         color[5] = k & 255;
         fwrite(color, 6, 1, fp); */
-          colorsToBeWrittenOnFile[counter++] = k >> 8;
-          colorsToBeWrittenOnFile[counter++] = k & 255;
-          colorsToBeWrittenOnFile[counter++] = k >> 8;
-          colorsToBeWrittenOnFile[counter++] = k & 255;
-          colorsToBeWrittenOnFile[counter++] = k >> 8;
-          colorsToBeWrittenOnFile[counter++] = k >> 8;
+          colorsToBeWrittenOnFile[counter][0] = k >> 8;
+          colorsToBeWrittenOnFile[counter][1] = k & 255;
+          colorsToBeWrittenOnFile[counter][2] = k >> 8;
+          colorsToBeWrittenOnFile[counter][3] = k & 255;
+          colorsToBeWrittenOnFile[counter][4] = k >> 8;
+          colorsToBeWrittenOnFile[counter][5] = k >> 8;
 
       }
+        counter++;
     }
   }
     
-    for (counter = 0; counter < arraySize; counter++){
+    for (counter = 0; counter < rows; counter++){
         fwrite(colorsToBeWrittenOnFile[counter], 6, 1, fp);
     }
     
