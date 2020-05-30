@@ -76,6 +76,7 @@ int main(int argc, char* argv[])
   int counter = 0;
     int rows = yres * xres;
         
+    //TODO pthread_create
 
   for (j = 0; j < yres && counter < MAXROWS; j++) {
     y = ymax - j * dy;
@@ -115,6 +116,8 @@ int main(int argc, char* argv[])
         counter++;
     }
   }
+    
+    //TODO pthread_join
     
     for (i = 0; i < counter; i++){
         fwrite(colorsToBeWrittenOnFile[i], 6, 1, fp);
