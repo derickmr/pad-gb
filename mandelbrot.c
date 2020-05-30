@@ -1,24 +1,21 @@
 /*
   This program is an adaptation of the Mandelbrot program
-  from the Programming Rosetta Stone, see
-  http://rosettacode.org/wiki/Mandelbrot_set
-  Compile the program with:
-  gcc -o mandelbrot -O4 mandelbrot.c
-  Usage:
+  from andrejbauer project on github, see:
+  https://gist.github.com/andrejbauer/7919569
  
+  It uses andrejbauer algorithm as a basis, but processing is done in parallel using pthread library, in a master-slave model.
+ 
+  Compile the program with:
+  gcc -pthread -o mandelbrot mandelbrot.c
+  
+  Usage:
   ./mandelbrot <xmin> <xmax> <ymin> <ymax> <maxiter> <xres> <out.ppm>
+  
   Example:
   ./mandelbrot 0.27085 0.27100 0.004640 0.004810 1000 1024 pic.ppm
-  The interior of Mandelbrot set is black, the levels are gray.
-  If you have very many levels, the picture is likely going to be quite
-  dark. You can postprocess it to fix the palette. For instance,
-  with ImageMagick you can do (assuming the picture was saved to pic.ppm):
-  convert -normalize pic.ppm pic.png
-  The resulting pic.png is still gray, but the levels will be nicer. You
-  can also add colors, for instance:
-  convert -negate -normalize -fill blue -tint 100 pic.ppm pic.png
-  See http://www.imagemagick.org/Usage/color_mods/ for what ImageMagick
-  can do. It can do a lot.
+ 
+  The resulting file can be opened in any software that handles .ppm extensions (e.g. Gimp).
+  
 */
 
 #include <stdio.h>
