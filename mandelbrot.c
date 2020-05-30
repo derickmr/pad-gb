@@ -27,6 +27,7 @@
 #include <stdint.h>
 #define MAXROWS 10000000
 
+//TODO allocate it dynamically
 unsigned char colorsToBeWrittenOnFile[MAXROWS][6];
 
 int main(int argc, char* argv[])
