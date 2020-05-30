@@ -51,6 +51,8 @@ void *calculate_mandelbrot(void *arg){
     int yStart = yres * threadIndex;
     int yEnd = yres * (threadIndex + 1);
     
+    printf ("xres: %d, yres: %d", xres, yres);
+    
     /* Precompute pixel width and height. */
      double dx=(xmax-xmin)/xres;
      double dy=(ymax-ymin)/yres;
@@ -147,12 +149,14 @@ int main(int argc, char* argv[])
 
     
     int i;
+    
+    numThreads = 4;
 
-    for (i = 0; i < 4; i++){
+    for (i = 0; i < numThreads; i++){
         pthread_create(&(threads[i]), NULL, calculate_mandelbrot, (void *) (intptr_t) i);
     }
     
-    for (i = 0; i < 4; i++){
+    for (i = 0; i < numThreads; i++){
         pthread_join(threads[i], NULL);
     }
         
