@@ -41,6 +41,8 @@ typedef struct{
     int arrayCounter;
     int threadStart;
     int threadEnd;
+    double dx;
+    double dy;
 }thread_arg, *ptr_thread_arg;
 
 
@@ -48,9 +50,8 @@ void *calculate_mandelbrot(void *arg){
     
     ptr_thread_arg targ = (ptr_thread_arg)arg;
     
-    /* Precompute pixel width and height. */
-     double dx=(targ->xmax-targ->xmin)/targ->xres;
-     double dy=(targ->ymax-targ->ymin)/targ->yres;
+    double dx = targ->dx;
+    double dy = targ->dy;
     
     double x, y; /* Coordinates of the current point in the complex plane. */
     double u, v; /* Coordinates of the iterated point. */
@@ -75,7 +76,7 @@ void *calculate_mandelbrot(void *arg){
               u2 = u * u;
               v2 = v * v;
         };
-        /* compute  pixel color and write it to file */
+        /* compute pixel color*/
         if (k >= targ->maxiter) {
           /* interior */
             int colorCounter;
@@ -144,6 +145,10 @@ int main(int argc, char* argv[])
 
     
     int i, j;
+    
+    /* Precompute pixel width and height. */
+    double dx=(targ->xmax-targ->xmin)/targ->xres;
+    double dy=(targ->ymax-targ->ymin)/targ->yres;
         
     thread_arg arguments[NUMTHREADS];
  
@@ -155,6 +160,8 @@ int main(int argc, char* argv[])
         arguments[i].ymin = ymin;
         arguments[i].ymax = ymax;
         arguments[i].maxiter = maxiter;
+        arguments[i].dx = dx;
+        arguments[i].dy = dy;
         arguments[i].arrayCounter = (arraySize/NUMTHREADS) * i;
         arguments[i].threadStart = (yres/NUMTHREADS) * i;
         arguments[i].threadEnd = (yres/NUMTHREADS) * (i+1);
