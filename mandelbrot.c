@@ -30,16 +30,16 @@
 unsigned char *colorsToBeWrittenOnFile;
 
 typedef struct{
-    int arraySize;
     int yres;
     int xres;
-    int numThreads;
-    int threadIndex;
     double xmin;
     double xmax;
     double ymin;
     double ymax;
     uint16_t maxiter;
+    int arrayCounter;
+    int threadStart;
+    int threadEnd;
 }thread_arg, *ptr_thread_arg;
 
 
@@ -47,16 +47,6 @@ void *calculate_mandelbrot(void *arg){
     
     ptr_thread_arg targ = (ptr_thread_arg)arg;
     
-    int counter = (targ->arraySize/targ->numThreads) * targ->threadIndex;
-    int counterEnd = (targ->arraySize/targ->numThreads) * (targ->threadIndex+1);
-
-    int yStart = (targ->yres/targ->numThreads) * targ->threadIndex;
-    int yEnd = (targ->yres/targ->numThreads) * (targ->threadIndex + 1);
-    
-    if (targ->threadIndex == targ->numThreads - 1){
-        yEnd += targ->yres%targ->numThreads;
-    }
-        
     /* Precompute pixel width and height. */
      double dx=(targ->xmax-targ->xmin)/targ->xres;
      double dy=(targ->ymax-targ->ymin)/targ->yres;
@@ -66,9 +56,9 @@ void *calculate_mandelbrot(void *arg){
     int i,j; /* Pixel counters */
     int k; /* Iteration counter */
     
-    printf("yStart: %d, yEnd: %d, counter: %d, counterEnd: %d \n", yStart, yEnd, counter, counterEnd);
-    
-    for (j = yStart; j < yEnd && counter < counterEnd; j++) {
+    int counter = targ->arrayCounter;
+        
+    for (j = targ->threadStart; j < targ->threadEnd; j++) {
       y = targ->ymax - j * dy;
       for(i = 0; i < targ->xres; i++) {
       
@@ -159,17 +149,19 @@ int main(int argc, char* argv[])
     thread_arg arguments[numThreads];
  
     for (i = 0; i < numThreads; i++){
-        arguments[i].arraySize = arraySize;
         arguments[i].yres = yres;
         arguments[i].xres = xres;
-        arguments[i].numThreads = numThreads;
-        arguments[i].threadIndex = i;
         arguments[i].xmin = xmin;
         arguments[i].xmax = xmax;
         arguments[i].ymin = ymin;
         arguments[i].ymax = ymax;
         arguments[i].maxiter = maxiter;
+        arguments[i].threadCounter = (arraySize/numThreads) * i;
+        arguments[i].threadStart = (yres/numThreads) * i;
+        arguments[i].threadEnd = (yres/numThreads) * (i+1);
     }
+    
+    arguments[numThreads-1] += yres&numThreads;
 
     for (i = 0; i < numThreads; i++){
         pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i]));
