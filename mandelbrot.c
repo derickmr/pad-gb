@@ -181,7 +181,7 @@ int main(int argc, char* argv[])
     
     calculate_mandelbrot(&(arguments[0]));
     
-    for (i = i; i < NUMTHREADS; i++){
+    for (i = 1; i < NUMTHREADS; i++){
         pthread_join(threads[i], NULL);
     }
         
