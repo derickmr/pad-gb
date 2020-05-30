@@ -175,11 +175,13 @@ int main(int argc, char* argv[])
     arguments[NUMTHREADS-1].threadEnd += yres&NUMTHREADS;
 
     //Parallel computing
-    for (i = 0; i < NUMTHREADS; i++){
+    for (i = 1; i < NUMTHREADS; i++){
         pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i]));
     }
     
-    for (i = 0; i < NUMTHREADS; i++){
+    calculate_mandelbrot(&(arguments[0]));
+    
+    for (i = i; i < NUMTHREADS; i++){
         pthread_join(threads[i], NULL);
     }
         
