@@ -25,6 +25,9 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdint.h>
+#define MAXROWS 10000000
+
+unsigned char colorsToBeWrittenOnFile[MAXROWS][6];
 
 int main(int argc, char* argv[])
 {
@@ -71,11 +74,9 @@ int main(int argc, char* argv[])
     
   int counter = 0;
     int rows = yres * xres;
-    
-    unsigned char colorsToBeWrittenOnFile[rows][6];
-    
+        
 
-  for (j = 0; j < yres; j++) {
+  for (j = 0; j < yres && counter < MAXROWS; j++) {
     y = ymax - j * dy;
     for(i = 0; i < xres; i++) {
     
@@ -114,10 +115,10 @@ int main(int argc, char* argv[])
     }
   }
     
-    for (counter = 0; counter < rows; counter++){
-        fwrite(colorsToBeWrittenOnFile[counter], 6, 1, fp);
+    for (i = 0; i < counter; i++){
+        fwrite(colorsToBeWrittenOnFile[i], 6, 1, fp);
     }
-    
+        
   fclose(fp);
   return 0;
 }
