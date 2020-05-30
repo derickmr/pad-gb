@@ -26,9 +26,7 @@
 #include <math.h>
 #include <stdint.h>
 #include <pthread.h>
-#define MAXROWS 10000000
 
-//TODO allocate it dynamically
 unsigned char *colorsToBeWrittenOnFile;
 
 //TODO create struct and pass as parameter to threads
@@ -42,23 +40,37 @@ double ymin;
 double ymax;
 uint16_t maxiter;
 
+typedef struct{
+    int arraySize;
+    int yres;
+    int xres;
+    int numThreads;
+    int threadIndex;
+    double xmin;
+    double xmax;
+    double ymin;
+    double ymax;
+    uint16_t maxiter;
+}thread_arg, *ptr_thread_arg;
+
+
 void *calculate_mandelbrot(void *arg){
     
-    int threadIndex = (intptr_t) arg;
+    ptr_thread_arg targ = (ptr_thread_arg)arg;
     
-    int counter = (arraySize/numThreads) * threadIndex;
-    int counterEnd = (arraySize/numThreads) * (threadIndex+1);
+    int counter = (targ->arraySize/targ->numThreads) * targ->threadIndex;
+    int counterEnd = (targ->arraySize/targ->numThreads) * (targ->threadIndex+1);
 
-    int yStart = (yres/numThreads) * threadIndex;
-    int yEnd = (yres/numThreads) * (threadIndex + 1);
+    int yStart = (targ->yres/targ->numThreads) * targ->threadIndex;
+    int yEnd = (targ->yres/targ->numThreads) * (targ->threadIndex + 1);
     
-    if (threadIndex == numThreads - 1){
-        yEnd += yres%numThreads;
+    if (targ->threadIndex == targ->numThreads - 1){
+        yEnd += targ->yres%targ->numThreads;
     }
         
     /* Precompute pixel width and height. */
-     double dx=(xmax-xmin)/xres;
-     double dy=(ymax-ymin)/yres;
+     double dx=(targ->xmax-targ->xmin)/targ->xres;
+     double dy=(targ->ymax-targ->ymin)/targ->yres;
     
     double x, y; /* Coordinates of the current point in the complex plane. */
     double u, v; /* Coordinates of the iterated point. */
@@ -75,16 +87,16 @@ void *calculate_mandelbrot(void *arg){
         double v= 0.0;
         double u2 = u * u;
         double v2 = v*v;
-        x = xmin + i * dx;
+        x = targ->xmin + i * dx;
         /* iterate the point */
-        for (k = 1; k < maxiter && (u2 + v2 < 4.0); k++) {
+        for (k = 1; k < targ->maxiter && (u2 + v2 < 4.0); k++) {
               v = 2 * u * v + y;
               u = u2 - v2 + x;
               u2 = u * u;
               v2 = v * v;
         };
         /* compute  pixel color and write it to file */
-        if (k >= maxiter) {
+        if (k >= targ->maxiter) {
           /* interior */
             int colorCounter;
             for (colorCounter = 0; colorCounter < 6; colorCounter++){
@@ -120,28 +132,23 @@ int main(int argc, char* argv[])
     pthread_t threads[4];
 
   /* The window in the plane. */
-    xmin = atof(argv[1]);
-    xmax = atof(argv[2]);
-    ymin = atof(argv[3]);
-    ymax = atof(argv[4]);
+    double xmin = atof(argv[1]);
+    double xmax = atof(argv[2]);
+    double ymin = atof(argv[3]);
+    double ymax = atof(argv[4]);
 
   /* Maximum number of iterations, at most 65535. */
-    maxiter = (unsigned short)atoi(argv[5]);
+   uint16_t maxiter = (unsigned short)atoi(argv[5]);
 
   /* Image size, width is given, height is computed. */
-  xres = atoi(argv[6]);
-  yres = (xres*(ymax-ymin))/(xmax-xmin);
+  int xres = atoi(argv[6]);
+  int yres = (xres*(ymax-ymin))/(xmax-xmin);
     
-    if (xres * yres > MAXROWS){
-        printf("Image size not supported. Please lower it.");
-        exit(EXIT_FAILURE);
-    }
+  int arraySize = yres * xres * 6;
     
-    arraySize = yres * xres * 6;
+  colorsToBeWrittenOnFile = (unsigned char *)malloc(arraySize * sizeof(unsigned char));
     
-    colorsToBeWrittenOnFile = (unsigned char *)malloc(arraySize * sizeof(unsigned char));
-    
-    printf ("array size: %d \n", arraySize);
+  printf ("array size: %d \n", arraySize);
 
   /* The output file name */
   const char* filename = argv[7];
@@ -158,10 +165,25 @@ int main(int argc, char* argv[])
     
     int i, j;
     
-    numThreads = 4;
+    int numThreads = 4;
+    
+    thread_arg arguments[numThreads];
+ 
+    for (i = 0; i < numThreads; i++){
+        arguments[i].arraySize = arraySize;
+        arguments[i].yres = yres;
+        arguments[i].xres = xres;
+        arguments[i].numThreads = numThreads;
+        arguments[i].threadIndex = i;
+        arguments[i].xmin = xmin;
+        arguments[i].xmax = xmax;
+        arguments[i].ymin = ymin;
+        arguments[i].ymax = ymax;
+        arguments[i].maxiter = maxiter;
+    }
 
     for (i = 0; i < numThreads; i++){
-        pthread_create(&(threads[i]), NULL, calculate_mandelbrot, (void *) (intptr_t) i);
+        pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i]));
     }
     
     for (i = 0; i < numThreads; i++){
