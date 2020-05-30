@@ -69,8 +69,8 @@ void *calculate_mandelbrot(void *arg){
     printf("yStart: %d, yEnd: %d, counter: %d, counterEnd: %d \n", yStart, yEnd, counter, counterEnd);
     
     for (j = yStart; j < yEnd && counter < counterEnd; j++) {
-      y = ymax - j * dy;
-      for(i = 0; i < xres; i++) {
+      y = targ->ymax - j * dy;
+      for(i = 0; i < targ->xres; i++) {
       
         double u = 0.0;
         double v= 0.0;
