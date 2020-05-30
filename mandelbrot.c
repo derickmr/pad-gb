@@ -94,8 +94,6 @@ int main(int argc, char* argv[])
       /* compute  pixel color and write it to file */
       if (k >= maxiter) {
         /* interior */
-        //const unsigned char black[] = {0, 0, 0, 0, 0, 0};
-        //fwrite (black, 6, 1, fp);
           int colorCounter;
           for (colorCounter = 0; colorCounter < 6; colorCounter++){
               colorsToBeWrittenOnFile[counter][colorCounter] = 0;
@@ -104,20 +102,12 @@ int main(int argc, char* argv[])
       }
       else {
         /* exterior */
-        /* unsigned char color[6];
-        color[0] = k >> 8;
-        color[1] = k & 255;
-        color[2] = k >> 8;
-        color[3] = k & 255;
-        color[4] = k >> 8;
-        color[5] = k & 255;
-        fwrite(color, 6, 1, fp); */
           colorsToBeWrittenOnFile[counter][0] = k >> 8;
           colorsToBeWrittenOnFile[counter][1] = k & 255;
           colorsToBeWrittenOnFile[counter][2] = k >> 8;
           colorsToBeWrittenOnFile[counter][3] = k & 255;
           colorsToBeWrittenOnFile[counter][4] = k >> 8;
-          colorsToBeWrittenOnFile[counter][5] = k >> 8;
+          colorsToBeWrittenOnFile[counter][5] = k & 255;
 
       }
         counter++;
