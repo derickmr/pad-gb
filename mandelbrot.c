@@ -45,11 +45,15 @@ uint16_t maxiter;
 void *calculate_mandelbrot(void *arg){
     
     int threadIndex = (intptr_t) arg;
-    int counter = yres/numThreads * threadIndex;
-    int counterEnd = yres/numThreads * (threadIndex + 1);
+    int counter = (arraySize/numThreads) * threadIndex;
+    int counterEnd = (arraySize/numThreads) * (threadIndex+1);
 
-    int yStart = yres * threadIndex;
-    int yEnd = yres * (threadIndex + 1);
+    int yStart = (yres/numThreads) * threadIndex;
+    int yEnd = (yres/numThreads) * (threadIndex + 1);
+    
+    if (threadIndex == numThreads - 1){
+        yEnd += yres%numThreads;
+    }
         
     /* Precompute pixel width and height. */
      double dx=(xmax-xmin)/xres;
@@ -134,6 +138,8 @@ int main(int argc, char* argv[])
     }
     
     arraySize = yres * xres;
+    
+    printf ("array size: %d \n", arraySize);
 
   /* The output file name */
   const char* filename = argv[7];
