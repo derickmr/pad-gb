@@ -32,10 +32,8 @@
 unsigned char *colorsToBeWrittenOnFile;
 
 typedef struct{
-    int yres;
     int xres;
     double xmin;
-    double xmax;
     double ymin;
     double ymax;
     uint16_t maxiter;
@@ -51,10 +49,8 @@ void *calculate_mandelbrot(void *arg){
     
     ptr_thread_arg targ = (ptr_thread_arg)arg;
     
-    int yres = targ->yres;
     int xres = targ->xres;
     double xmin = targ->xmin;
-    double xmax = targ->xmax;
     double ymin = targ->ymin;
     double ymax = targ->ymax;
     uint16_t maxiter = targ->maxiter;
