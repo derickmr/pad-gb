@@ -70,8 +70,9 @@ int main(int argc, char* argv[])
   int k; /* Iteration counter */
     
   int counter = 0;
+    int arraySize = yres * xres * 6;
     
-  unsigned char * colorsToBeWrittenOnFile  = (unsigned char *)malloc(yres * xres * 6 * sizeof(unsigned char));
+  unsigned char * colorsToBeWrittenOnFile  = (unsigned char *)malloc(arraySize * sizeof(unsigned char));
 
   for (j = 0; j < yres; j++) {
     y = ymax - j * dy;
@@ -120,6 +121,11 @@ int main(int argc, char* argv[])
       }
     }
   }
+    
+    for (counter = 0; counter < arraySize; counter++){
+        fwrite(colorsToBeWrittenOnFile[counter], 6, 1, fp);
+    }
+    
   fclose(fp);
   return 0;
 }
