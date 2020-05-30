@@ -25,10 +25,82 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdint.h>
+#include <pthread.h>
 #define MAXROWS 10000000
 
 //TODO allocate it dynamically
 unsigned char colorsToBeWrittenOnFile[MAXROWS][6];
+
+//TODO create struct and pass as parameter to threads
+int arraySize;
+int yres;
+int xres;
+int numThreads;
+double xmin;
+double xmax;
+double ymin;
+double ymax;
+uint16_t maxiter;
+
+void *calculate_mandelbrot(void *arg){
+    
+    int threadIndex = (intptr_t) arg;
+    int counter = yres/numThreads * threadIndex;
+    int counterEnd = yres/numThreads * (threadIndex + 1);
+
+    int yStart = yres * threadIndex;
+    int yEnd = yres * (threadIndex + 1);
+    
+    /* Precompute pixel width and height. */
+     double dx=(xmax-xmin)/xres;
+     double dy=(ymax-ymin)/yres;
+    
+    double x, y; /* Coordinates of the current point in the complex plane. */
+    double u, v; /* Coordinates of the iterated point. */
+    int i,j; /* Pixel counters */
+    int k; /* Iteration counter */
+    
+    for (j = yStart; j < counterEnd && counter < counterEnd; j++) {
+      y = ymax - j * dy;
+      for(i = 0; i < xres; i++) {
+      
+        double u = 0.0;
+        double v= 0.0;
+        double u2 = u * u;
+        double v2 = v*v;
+        x = xmin + i * dx;
+        /* iterate the point */
+        for (k = 1; k < maxiter && (u2 + v2 < 4.0); k++) {
+              v = 2 * u * v + y;
+              u = u2 - v2 + x;
+              u2 = u * u;
+              v2 = v * v;
+        };
+        /* compute  pixel color and write it to file */
+        if (k >= maxiter) {
+          /* interior */
+            int colorCounter;
+            for (colorCounter = 0; colorCounter < 6; colorCounter++){
+                colorsToBeWrittenOnFile[counter][colorCounter] = 0;
+            }
+          
+        }
+        else {
+          /* exterior */
+            colorsToBeWrittenOnFile[counter][0] = k >> 8;
+            colorsToBeWrittenOnFile[counter][1] = k & 255;
+            colorsToBeWrittenOnFile[counter][2] = k >> 8;
+            colorsToBeWrittenOnFile[counter][3] = k & 255;
+            colorsToBeWrittenOnFile[counter][4] = k >> 8;
+            colorsToBeWrittenOnFile[counter][5] = k & 255;
+
+        }
+          counter++;
+      }
+    }
+    return NULL;
+  }
+    
 
 int main(int argc, char* argv[])
 {
@@ -38,19 +110,28 @@ int main(int argc, char* argv[])
     printf("Example: %s 0.27085 0.27100 0.004640 0.004810 1000 1024 pic.ppm\n", argv[0]);
     exit(EXIT_FAILURE);
   }
+    
+    pthread_t threads[4];
 
   /* The window in the plane. */
-  const double xmin = atof(argv[1]);
-  const double xmax = atof(argv[2]);
-  const double ymin = atof(argv[3]);
-  const double ymax = atof(argv[4]);
+    xmin = atof(argv[1]);
+    xmax = atof(argv[2]);
+    ymin = atof(argv[3]);
+    ymax = atof(argv[4]);
 
   /* Maximum number of iterations, at most 65535. */
-  const uint16_t maxiter = (unsigned short)atoi(argv[5]);
+    maxiter = (unsigned short)atoi(argv[5]);
 
   /* Image size, width is given, height is computed. */
-  const int xres = atoi(argv[6]);
-  const int yres = (xres*(ymax-ymin))/(xmax-xmin);
+  xres = atoi(argv[6]);
+  yres = (xres*(ymax-ymin))/(xmax-xmin);
+    
+    if (xres * yres > MAXROWS){
+        printf("Image size not supported. Please lower it.");
+        exit(EXIT_FAILURE);
+    }
+    
+    arraySize = yres * xres;
 
   /* The output file name */
   const char* filename = argv[7];
@@ -64,62 +145,18 @@ int main(int argc, char* argv[])
           "P6\n# Mandelbrot, xmin=%lf, xmax=%lf, ymin=%lf, ymax=%lf, maxiter=%d\n%d\n%d\n%d\n",
           xmin, xmax, ymin, ymax, maxiter, xres, yres, (maxiter < 256 ? 256 : maxiter));
 
-  /* Precompute pixel width and height. */
-  double dx=(xmax-xmin)/xres;
-  double dy=(ymax-ymin)/yres;
-
-  double x, y; /* Coordinates of the current point in the complex plane. */
-  double u, v; /* Coordinates of the iterated point. */
-  int i,j; /* Pixel counters */
-  int k; /* Iteration counter */
     
-  int counter = 0;
-    int rows = yres * xres;
-        
-    //TODO pthread_create
+    int i;
 
-  for (j = 0; j < yres && counter < MAXROWS; j++) {
-    y = ymax - j * dy;
-    for(i = 0; i < xres; i++) {
-    
-      double u = 0.0;
-      double v= 0.0;
-      double u2 = u * u;
-      double v2 = v*v;
-      x = xmin + i * dx;
-      /* iterate the point */
-      for (k = 1; k < maxiter && (u2 + v2 < 4.0); k++) {
-            v = 2 * u * v + y;
-            u = u2 - v2 + x;
-            u2 = u * u;
-            v2 = v * v;
-      };
-      /* compute  pixel color and write it to file */
-      if (k >= maxiter) {
-        /* interior */
-          int colorCounter;
-          for (colorCounter = 0; colorCounter < 6; colorCounter++){
-              colorsToBeWrittenOnFile[counter][colorCounter] = 0;
-          }
-        
-      }
-      else {
-        /* exterior */
-          colorsToBeWrittenOnFile[counter][0] = k >> 8;
-          colorsToBeWrittenOnFile[counter][1] = k & 255;
-          colorsToBeWrittenOnFile[counter][2] = k >> 8;
-          colorsToBeWrittenOnFile[counter][3] = k & 255;
-          colorsToBeWrittenOnFile[counter][4] = k >> 8;
-          colorsToBeWrittenOnFile[counter][5] = k & 255;
-
-      }
-        counter++;
+    for (i = 0; i < 4; i++){
+        pthread_create(&(threads[i]), NULL, calculate_mandelbrot, (void *) (intptr_t) i);
     }
-  }
     
-    //TODO pthread_join
-    
-    for (i = 0; i < counter; i++){
+    for (i = 0; i < 4; i++){
+        pthread_join(threads[i], NULL);
+    }
+        
+    for (i = 0; i < arraySize; i++){
         fwrite(colorsToBeWrittenOnFile[i], 6, 1, fp);
     }
         
