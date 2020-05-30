@@ -37,7 +37,7 @@ typedef struct{
     double ymin;
     double ymax;
     uint16_t maxiter;
-    int arrayCounter;
+    int counter;
     int threadStart;
     int threadEnd;
     double dx;
@@ -54,7 +54,7 @@ void *calculate_mandelbrot(void *arg){
     double ymin = targ->ymin;
     double ymax = targ->ymax;
     uint16_t maxiter = targ->maxiter;
-    int arrayCounter = targ->arrayCounter;
+    int counter = targ->counter;
     int threadStart = targ->threadStart;
     int threadEnd = targ->threadEnd;
     double dx = targ->dx;
@@ -65,7 +65,6 @@ void *calculate_mandelbrot(void *arg){
     int i,j; /* Pixel counters */
     int k; /* Iteration counter */
     
-    int counter = arrayCounter;
         
     for (j = threadStart; j < threadEnd; j++) {
       y = ymax - j * dy;
@@ -172,7 +171,7 @@ int main(int argc, char* argv[])
         arguments[i].maxiter = maxiter;
         arguments[i].dx = dx;
         arguments[i].dy = dy;
-        arguments[i].arrayCounter = (arraySize/NUMTHREADS) * i;
+        arguments[i].counter = (arraySize/NUMTHREADS) * i;
         arguments[i].threadStart = (yres/NUMTHREADS) * i;
         arguments[i].threadEnd = (yres/NUMTHREADS) * (i+1);
     }
