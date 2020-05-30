@@ -26,6 +26,7 @@
 #include <math.h>
 #include <stdint.h>
 #include <pthread.h>
+#define NUMTHREADS 4
 
 unsigned char *colorsToBeWrittenOnFile;
 
@@ -143,12 +144,10 @@ int main(int argc, char* argv[])
 
     
     int i, j;
-    
-    int numThreads = 4;
-    
-    thread_arg arguments[numThreads];
+        
+    thread_arg arguments[NUMTHREADS];
  
-    for (i = 0; i < numThreads; i++){
+    for (i = 0; i < NUMTHREADS; i++){
         arguments[i].yres = yres;
         arguments[i].xres = xres;
         arguments[i].xmin = xmin;
@@ -156,18 +155,18 @@ int main(int argc, char* argv[])
         arguments[i].ymin = ymin;
         arguments[i].ymax = ymax;
         arguments[i].maxiter = maxiter;
-        arguments[i].arrayCounter = (arraySize/numThreads) * i;
-        arguments[i].threadStart = (yres/numThreads) * i;
-        arguments[i].threadEnd = (yres/numThreads) * (i+1);
+        arguments[i].arrayCounter = (arraySize/NUMTHREADS) * i;
+        arguments[i].threadStart = (yres/NUMTHREADS) * i;
+        arguments[i].threadEnd = (yres/NUMTHREADS) * (i+1);
     }
     
-    arguments[numThreads-1].threadEnd += yres&numThreads;
+    arguments[NUMTHREADS-1].threadEnd += yres&NUMTHREADS;
 
-    for (i = 0; i < numThreads; i++){
+    for (i = 0; i < NUMTHREADS; i++){
         pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i]));
     }
     
-    for (i = 0; i < numThreads; i++){
+    for (i = 0; i < NUMTHREADS; i++){
         pthread_join(threads[i], NULL);
     }
         
