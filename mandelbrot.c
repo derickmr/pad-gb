@@ -50,34 +50,47 @@ void *calculate_mandelbrot(void *arg){
     
     ptr_thread_arg targ = (ptr_thread_arg)arg;
     
+    int yres = targ->yres;
+    int xres = targ->xres;
+    double xmin = targ->xmin;
+    double xmax = targ->xmax;
+    double ymin = targ->ymin;
+    double ymax = targ->ymax;
+    uint16_t maxiter = targ->maxiter;
+    int arrayCounter = targ->arrayCounter;
+    int threadStart = targ->threadStart;
+    int threadEnd = targ->threadEnd;
     double dx = targ->dx;
     double dy = targ->dy;
+    
+    free(targ);
+    free(arg);
     
     double x, y; /* Coordinates of the current point in the complex plane. */
     double u, v; /* Coordinates of the iterated point. */
     int i,j; /* Pixel counters */
     int k; /* Iteration counter */
     
-    int counter = targ->arrayCounter;
+    int counter = arrayCounter;
         
-    for (j = targ->threadStart; j < targ->threadEnd; j++) {
-      y = targ->ymax - j * dy;
-      for(i = 0; i < targ->xres; i++) {
+    for (j = threadStart; j < threadEnd; j++) {
+      y = ymax - j * dy;
+      for(i = 0; i < xres; i++) {
       
         double u = 0.0;
         double v= 0.0;
         double u2 = u * u;
         double v2 = v*v;
-        x = targ->xmin + i * dx;
+        x = xmin + i * dx;
         /* iterate the point */
-        for (k = 1; k < targ->maxiter && (u2 + v2 < 4.0); k++) {
+        for (k = 1; k < maxiter && (u2 + v2 < 4.0); k++) {
               v = 2 * u * v + y;
               u = u2 - v2 + x;
               u2 = u * u;
               v2 = v * v;
         };
         /* compute pixel color*/
-        if (k >= targ->maxiter) {
+        if (k >= maxiter) {
           /* interior */
             int colorCounter;
             for (colorCounter = 0; colorCounter < 6; colorCounter++){
@@ -147,8 +160,8 @@ int main(int argc, char* argv[])
     int i, j;
     
     /* Precompute pixel width and height. */
-    double dx=(targ->xmax-targ->xmin)/targ->xres;
-    double dy=(targ->ymax-targ->ymin)/targ->yres;
+    double dx=(xmax-xmin)/xres;
+    double dy=(ymax-ymin)/yres;
         
     thread_arg arguments[NUMTHREADS];
  
