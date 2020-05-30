@@ -117,6 +117,11 @@ int main(int argc, char* argv[])
     exit(EXIT_FAILURE);
   }
     
+    if (NUMTHREADS < 1){
+        printf("Program should have at leasts 1 thread\n");
+        exit(EXIT_FAILURE);
+    }
+    
     pthread_t threads[4];
 
   /* The window in the plane. */
@@ -172,13 +177,14 @@ int main(int argc, char* argv[])
         arguments[i].threadEnd = (yres/NUMTHREADS) * (i+1);
     }
     
-    arguments[NUMTHREADS-1].threadEnd += yres&NUMTHREADS;
+    arguments[NUMTHREADS-1].threadEnd += yres%NUMTHREADS;
 
-    //Parallel computing
+    //Computing slaves
     for (i = 1; i < NUMTHREADS; i++){
         pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i]));
     }
     
+    //Master
     calculate_mandelbrot(&(arguments[0]));
     
     for (i = 1; i < NUMTHREADS; i++){
