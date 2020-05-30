@@ -160,10 +160,8 @@ int main(int argc, char* argv[])
     thread_arg arguments[NUMTHREADS];
  
     for (i = 0; i < NUMTHREADS; i++){
-        arguments[i].yres = yres;
         arguments[i].xres = xres;
         arguments[i].xmin = xmin;
-        arguments[i].xmax = xmax;
         arguments[i].ymin = ymin;
         arguments[i].ymax = ymax;
         arguments[i].maxiter = maxiter;
