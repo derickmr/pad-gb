@@ -150,15 +150,15 @@ int main(int argc, char* argv[])
           "P6\n# Mandelbrot, xmin=%lf, xmax=%lf, ymin=%lf, ymax=%lf, maxiter=%d\n%d\n%d\n%d\n",
           xmin, xmax, ymin, ymax, maxiter, xres, yres, (maxiter < 256 ? 256 : maxiter));
 
-    
-    int i, j;
-    
     /* Precompute pixel width and height. */
     double dx=(xmax-xmin)/xres;
     double dy=(ymax-ymin)/yres;
         
     thread_arg arguments[NUMTHREADS];
  
+    int i, j;
+    
+    //Initializing threads struct
     for (i = 0; i < NUMTHREADS; i++){
         arguments[i].xres = xres;
         arguments[i].xmin = xmin;
@@ -174,6 +174,7 @@ int main(int argc, char* argv[])
     
     arguments[NUMTHREADS-1].threadEnd += yres&NUMTHREADS;
 
+    //Parallel computing
     for (i = 0; i < NUMTHREADS; i++){
         pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i]));
     }
@@ -182,6 +183,7 @@ int main(int argc, char* argv[])
         pthread_join(threads[i], NULL);
     }
         
+    //Writing result to file
     unsigned char color[COLOR_SIZE];
     
     for (i = 0; i < arraySize; ){
