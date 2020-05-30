@@ -29,7 +29,7 @@
 #define MAXROWS 10000000
 
 //TODO allocate it dynamically
-unsigned char colorsToBeWrittenOnFile[MAXROWS][6];
+unsigned char *colorsToBeWrittenOnFile;
 
 //TODO create struct and pass as parameter to threads
 int arraySize;
@@ -45,6 +45,7 @@ uint16_t maxiter;
 void *calculate_mandelbrot(void *arg){
     
     int threadIndex = (intptr_t) arg;
+    
     int counter = (arraySize/numThreads) * threadIndex;
     int counterEnd = (arraySize/numThreads) * (threadIndex+1);
 
@@ -87,21 +88,20 @@ void *calculate_mandelbrot(void *arg){
           /* interior */
             int colorCounter;
             for (colorCounter = 0; colorCounter < 6; colorCounter++){
-                colorsToBeWrittenOnFile[counter][colorCounter] = 0;
+                colorsToBeWrittenOnFile[counter++] = 0;
             }
           
         }
         else {
           /* exterior */
-            colorsToBeWrittenOnFile[counter][0] = k >> 8;
-            colorsToBeWrittenOnFile[counter][1] = k & 255;
-            colorsToBeWrittenOnFile[counter][2] = k >> 8;
-            colorsToBeWrittenOnFile[counter][3] = k & 255;
-            colorsToBeWrittenOnFile[counter][4] = k >> 8;
-            colorsToBeWrittenOnFile[counter][5] = k & 255;
+            colorsToBeWrittenOnFile[counter++] = k >> 8;
+            colorsToBeWrittenOnFile[counter++] = k & 255;
+            colorsToBeWrittenOnFile[counter++] = k >> 8;
+            colorsToBeWrittenOnFile[counter++] = k & 255;
+            colorsToBeWrittenOnFile[counter++] = k >> 8;
+            colorsToBeWrittenOnFile[counter++] = k & 255;
 
         }
-          counter++;
       }
     }
     return NULL;
@@ -137,7 +137,9 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
     
-    arraySize = yres * xres;
+    arraySize = yres * xres * 6;
+    
+    colorsToBeWrittenOnFile = (unsigned char *)malloc(arraySize * sizeof(unsigned char));
     
     printf ("array size: %d \n", arraySize);
 
@@ -154,7 +156,7 @@ int main(int argc, char* argv[])
           xmin, xmax, ymin, ymax, maxiter, xres, yres, (maxiter < 256 ? 256 : maxiter));
 
     
-    int i;
+    int i, j;
     
     numThreads = 4;
 
@@ -166,8 +168,13 @@ int main(int argc, char* argv[])
         pthread_join(threads[i], NULL);
     }
         
-    for (i = 0; i < arraySize; i++){
-        fwrite(colorsToBeWrittenOnFile[i], 6, 1, fp);
+    unsigned char color[6];
+    
+    for (i = 0; i < arraySize; ){
+        for (j = 0; j < 6; j++){
+                color[j] = colorsToBeWrittenOnFile[i++];
+        }
+        fwrite(color, 6, 1, fp);
     }
         
   fclose(fp);
