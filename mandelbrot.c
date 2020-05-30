@@ -29,17 +29,6 @@
 
 unsigned char *colorsToBeWrittenOnFile;
 
-//TODO create struct and pass as parameter to threads
-int arraySize;
-int yres;
-int xres;
-int numThreads;
-double xmin;
-double xmax;
-double ymin;
-double ymax;
-uint16_t maxiter;
-
 typedef struct{
     int arraySize;
     int yres;
