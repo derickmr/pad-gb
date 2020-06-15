@@ -65,7 +65,7 @@ void *calculate_mandelbrot(void *arg){
     int k; /* Iteration counter */
     
         
-    for (j = threadStart; j < threadEnd; j++) {
+    for (j = threadStart; j < threadEnd && counter < threadEnd * xres; j++) {
       y = ymax - j * dy;
       for(i = 0; i < xres; i++) {
       
@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
     
     clock_t begin = clock();
 
-    //array size:
+    //array size: 7127040
     //7143408
     
   /* The window in the plane. */
