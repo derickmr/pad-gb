@@ -179,7 +179,11 @@ int main(int argc, char* argv[])
     
     printf ("test 2\n");
     
+    printf ("thread end final 1: %d", arguments[i].threadEnd);
+    
     arguments[numThreads-1].threadEnd += yres%numThreads;
+    
+    printf ("thread end final 2: %d", arguments[i].threadEnd);
 
     //Computing slaves
     for (i = 1; i < numThreads; i++){
