@@ -57,6 +57,8 @@ void *calculate_mandelbrot(void *arg){
     double dx = targ->dx;
     double dy = targ->dy;
     
+    printf ("xres: %d \n xmin: %f \n ymin: %f \n counter: %d \n threadStart: %d \n threadEnd: %d \n dx: %f \n dy: %f \n", xres, xmin, ymin, counter, threadStart, threadEnd, dx, dy);
+    
     double x, y; /* Coordinates of the current point in the complex plane. */
     double u, v; /* Coordinates of the iterated point. */
     int i,j; /* Pixel counters */
