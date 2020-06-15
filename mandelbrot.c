@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
     double xmax = atof(argv[2]);
     double ymin = atof(argv[3]);
     double ymax = atof(argv[4]);
-    int numThreads = atof(argv[8]);
+    int numThreads = atoi(argv[8]);
     
     pthread_t threads[numThreads];
 
@@ -199,7 +199,7 @@ int main(int argc, char* argv[])
         
   fclose(fp);
   free(colorsToBeWrittenOnFile);
-    
+     
     clock_t end = clock();
 
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
