@@ -159,6 +159,8 @@ int main(int argc, char* argv[])
  
     int i, j;
     
+    printf ("test 1\n");
+    
     //Initializing threads struct
     for (i = 0; i < numThreads; i++){
         arguments[i].xres = xres;
@@ -173,6 +175,8 @@ int main(int argc, char* argv[])
         arguments[i].threadEnd = (yres/numThreads) * (i+1);
     }
     
+    printf ("test 2\n");
+    
     arguments[numThreads-1].threadEnd += yres%numThreads;
 
     //Computing slaves
@@ -186,6 +190,8 @@ int main(int argc, char* argv[])
     for (i = 1; i < numThreads; i++){
         pthread_join(threads[i], NULL);
     }
+    
+    printf ("test 3\n");
         
     //Writing result to file
     unsigned char color[COLOR_SIZE];
@@ -196,6 +202,8 @@ int main(int argc, char* argv[])
         }
         fwrite(color, COLOR_SIZE, 1, fp);
     }
+    
+    printf ("test 4\n");
         
   fclose(fp);
   free(colorsToBeWrittenOnFile);
