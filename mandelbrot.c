@@ -204,7 +204,7 @@ int main(int argc, char* argv[])
 
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
     
-    printf ("Execution time: %d \n", time_spent);
+    printf ("Execution time: %f \n", time_spent);
 
   return 0;
 }
