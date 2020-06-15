@@ -86,12 +86,16 @@ void *calculate_mandelbrot(void *arg){
           /* interior */
             int colorCounter;
             for (colorCounter = 0; colorCounter < COLOR_SIZE; colorCounter++){
+                printf("colorToBrWrittenOnFile\n");
                 colorsToBeWrittenOnFile[counter++] = 0;
             }
           
         }
         else {
           /* exterior */
+            
+            printf("colorToBrWrittenOnFile\n");
+            
             colorsToBeWrittenOnFile[counter++] = k >> 8;
             colorsToBeWrittenOnFile[counter++] = k & 255;
             colorsToBeWrittenOnFile[counter++] = k >> 8;
