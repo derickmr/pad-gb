@@ -177,7 +177,7 @@ int main(int argc, char* argv[])
         arguments[i].threadEnd = (yres/numThreads) * (i+1);
     }
     
-    printf ("test 2\n");
+    printf ("yres: %d", yres);
     
     printf ("thread end final 1: %d", arguments[i].threadEnd);
     
