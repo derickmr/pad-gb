@@ -101,7 +101,7 @@ void *calculate_mandelbrot(void *arg){
             colorsToBeWrittenOnFile[counter++] = k & 255;
 
         }
-          printf ("counter: %d \n", counter);
+//          printf ("counter: %d \n", counter);
       }
     }
     return NULL;
@@ -119,6 +119,8 @@ int main(int argc, char* argv[])
     
     clock_t begin = clock();
 
+    //array size:
+    //7143408
     
   /* The window in the plane. */
     double xmin = atof(argv[1]);
