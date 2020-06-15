@@ -9,10 +9,10 @@
   gcc -pthread -o mandelbrot mandelbrot.c
   
   Usage:
-  ./mandelbrot <xmin> <xmax> <ymin> <ymax> <maxiter> <xres> <out.ppm>
+  ./mandelbrot <xmin> <xmax> <ymin> <ymax> <maxiter> <xres> <out.ppm> <numThreads>
   
   Example:
-  ./mandelbrot 0.27085 0.27100 0.004640 0.004810 1000 1024 pic.ppm
+  ./mandelbrot 0.27085 0.27100 0.004640 0.004810 1000 1024 pic.ppm 10
  
   The resulting file can be opened in any software that handles .ppm extensions (e.g. Gimp).
   
@@ -184,6 +184,8 @@ int main(int argc, char* argv[])
         pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i]));
     }
     
+    printf ("test 3\n");
+    
     //Master
     calculate_mandelbrot(&(arguments[0]));
     
@@ -191,7 +193,7 @@ int main(int argc, char* argv[])
         pthread_join(threads[i], NULL);
     }
     
-    printf ("test 3\n");
+    printf ("test 4\n");
         
     //Writing result to file
     unsigned char color[COLOR_SIZE];
@@ -203,7 +205,7 @@ int main(int argc, char* argv[])
         fwrite(color, COLOR_SIZE, 1, fp);
     }
     
-    printf ("test 4\n");
+    printf ("test 5\n");
         
   fclose(fp);
   free(colorsToBeWrittenOnFile);
