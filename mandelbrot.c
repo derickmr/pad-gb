@@ -23,7 +23,7 @@
 #include <math.h>
 #include <stdint.h>
 #include <pthread.h>
-#define NUMTHREADS 4
+#include <time.h>
 #define COLOR_SIZE 6
 
 unsigned char *colorsToBeWrittenOnFile;
@@ -107,24 +107,24 @@ void *calculate_mandelbrot(void *arg){
 int main(int argc, char* argv[])
 {
   /* Parse the command line arguments. */
-  if (argc != 8) {
-    printf("Usage:   %s <xmin> <xmax> <ymin> <ymax> <maxiter> <xres> <out.ppm>\n", argv[0]);
-    printf("Example: %s 0.27085 0.27100 0.004640 0.004810 1000 1024 pic.ppm\n", argv[0]);
+  if (argc != 9) {
+    printf("Usage:   %s <xmin> <xmax> <ymin> <ymax> <maxiter> <xres> <out.ppm> <numthreads>\n", argv[0]);
+    printf("Example: %s 0.27085 0.27100 0.004640 0.004810 1000 1024 pic.ppm 10\n", argv[0]);
     exit(EXIT_FAILURE);
   }
     
-    if (NUMTHREADS < 1){
-        printf("Program should have at leasts 1 thread\n");
-        exit(EXIT_FAILURE);
-    }
-    
-    pthread_t threads[4];
+    clock_t begin = clock();
 
+    
   /* The window in the plane. */
     double xmin = atof(argv[1]);
     double xmax = atof(argv[2]);
     double ymin = atof(argv[3]);
     double ymax = atof(argv[4]);
+    int numThreads = atof(argv[8]);
+    
+    pthread_t threads[numThreads];
+
 
   /* Maximum number of iterations, at most 65535. */
    uint16_t maxiter = (unsigned short)atoi(argv[5]);
@@ -155,12 +155,12 @@ int main(int argc, char* argv[])
     double dx=(xmax-xmin)/xres;
     double dy=(ymax-ymin)/yres;
         
-    thread_arg arguments[NUMTHREADS];
+    thread_arg arguments[numThreads];
  
     int i, j;
     
     //Initializing threads struct
-    for (i = 0; i < NUMTHREADS; i++){
+    for (i = 0; i < numThreads; i++){
         arguments[i].xres = xres;
         arguments[i].xmin = xmin;
         arguments[i].ymin = ymin;
@@ -168,22 +168,22 @@ int main(int argc, char* argv[])
         arguments[i].maxiter = maxiter;
         arguments[i].dx = dx;
         arguments[i].dy = dy;
-        arguments[i].counter = (arraySize/NUMTHREADS) * i;
-        arguments[i].threadStart = (yres/NUMTHREADS) * i;
-        arguments[i].threadEnd = (yres/NUMTHREADS) * (i+1);
+        arguments[i].counter = (arraySize/numThreads) * i;
+        arguments[i].threadStart = (yres/numThreads) * i;
+        arguments[i].threadEnd = (yres/numThreads) * (i+1);
     }
     
-    arguments[NUMTHREADS-1].threadEnd += yres%NUMTHREADS;
+    arguments[numThreads-1].threadEnd += yres%numThreads;
 
     //Computing slaves
-    for (i = 1; i < NUMTHREADS; i++){
+    for (i = 1; i < numThreads; i++){
         pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i]));
     }
     
     //Master
     calculate_mandelbrot(&(arguments[0]));
     
-    for (i = 1; i < NUMTHREADS; i++){
+    for (i = 1; i < numThreads; i++){
         pthread_join(threads[i], NULL);
     }
         
@@ -199,5 +199,12 @@ int main(int argc, char* argv[])
         
   fclose(fp);
   free(colorsToBeWrittenOnFile);
+    
+    clock_t end = clock();
+
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    
+    printf ("Execution time: %d \n", time_spent);
+
   return 0;
 }
