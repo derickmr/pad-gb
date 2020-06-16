@@ -108,7 +108,8 @@ void *calculate_mandelbrot(void *arg){
             colorsToBeWrittenOnFile[counter++] = k & 255;
 
         }
-          printf ("counter: %d \n", counter);
+          if (threadEnd == 1160)
+              printf ("counter: %d \n", counter);
       }
     }
     return NULL;
