@@ -211,7 +211,7 @@ int main(int argc, char* argv[])
     //Writing result to file
     unsigned char color[COLOR_SIZE];
     
-    for (i = 0; i < arraySize; ){
+    for (i = 0; i <= arraySize; ){
         for (j = 0; j < COLOR_SIZE; j++){
                 color[j] = colorsToBeWrittenOnFile[i++];
         }
