@@ -69,8 +69,8 @@ void *calculate_mandelbrot(void *arg){
         
     for (j = threadStart; j < threadEnd; j++) {
         
-        if (counter >= arraySize){
-            printf ("counter: %d", counter);
+        if (counter >= arraySize)
+            printf (" counter: %d \n xres: %d\n yres: %d\n ", counter, xres, yres);
             printf("vai dar xabu\n");
         }
         
