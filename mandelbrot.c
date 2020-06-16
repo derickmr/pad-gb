@@ -39,6 +39,7 @@ typedef struct{
     int threadEnd;
     double dx;
     double dy;
+    int arraySize;
 }thread_arg, *ptr_thread_arg;
 
 
@@ -56,6 +57,7 @@ void *calculate_mandelbrot(void *arg){
     int threadEnd = targ->threadEnd;
     double dx = targ->dx;
     double dy = targ->dy;
+    int arraySize = targ->arraySize;
     
     printf ("xres: %d \n xmin: %f \n ymin: %f \n counter: %d \n threadStart: %d \n threadEnd: %d \n dx: %f \n dy: %f \n\n", xres, xmin, ymin, counter, threadStart, threadEnd, dx, dy);
     
@@ -65,7 +67,7 @@ void *calculate_mandelbrot(void *arg){
     int k; /* Iteration counter */
     
         
-    for (j = threadStart; j < threadEnd && counter < threadEnd * xres * 6; j++) {
+    for (j = threadStart; j < threadEnd && counter < arraySize; j++) {
       y = ymax - j * dy;
       for(i = 0; i < xres; i++) {
       
@@ -179,6 +181,7 @@ int main(int argc, char* argv[])
         arguments[i].counter = (arraySize/numThreads) * i;
         arguments[i].threadStart = (yres/numThreads) * i;
         arguments[i].threadEnd = (yres/numThreads) * (i+1);
+        arguments[i].arraySize = arraySize;
     }
     
     printf ("yres: %d", yres);
