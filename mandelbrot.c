@@ -141,6 +141,8 @@ int main(int argc, char* argv[])
   int xres = atoi(argv[6]);
   int yres = (xres*(ymax-ymin))/(xmax-xmin);
     
+    printf ("yres: %d \n", yres);
+    
   int arraySize = yres * xres * COLOR_SIZE;
     
   colorsToBeWrittenOnFile = (unsigned char *)malloc(arraySize * sizeof(unsigned char));
@@ -193,16 +195,16 @@ int main(int argc, char* argv[])
     printf ("thread end final 2: %d", arguments[i].threadEnd);
 
     //Computing slaves
-    for (i = 1; i < numThreads; i++){
+    for (i = 0; i < numThreads; i++){
         pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i]));
     }
     
     printf ("test 3\n");
     
     //Master
-    calculate_mandelbrot(&(arguments[0]));
+//    calculate_mandelbrot(&(arguments[0]));
     
-    for (i = 1; i < numThreads; i++){
+    for (i = 0; i < numThreads; i++){
         pthread_join(threads[i], NULL);
     }
     
