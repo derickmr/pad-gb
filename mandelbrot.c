@@ -66,6 +66,7 @@ void *calculate_mandelbrot(void *arg){
     int i,j; /* Pixel counters */
     int k; /* Iteration counter */
     
+    printf ("n interacoes: %d", threadEnd * xres * COLOR_SIZE);
         
     for (j = threadStart; j < threadEnd; j++) {
         
@@ -192,7 +193,7 @@ int main(int argc, char* argv[])
         arguments[i].dy = dy;
         arguments[i].counter = (arraySize/numThreads) * i;
         arguments[i].threadStart = (yres/numThreads) * i;
-        arguments[i].threadEnd = (yres/numThreads) * (i+1) + (yres%numThreads);
+        arguments[i].threadEnd = (yres/numThreads) * (i+1);
         arguments[i].arraySize = arraySize;
     }
     
