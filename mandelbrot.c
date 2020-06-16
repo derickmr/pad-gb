@@ -147,9 +147,9 @@ int main(int argc, char* argv[])
   int xres = atoi(argv[6]);
   int yres = (xres*(ymax-ymin))/(xmax-xmin);
     
-    if (yres%numThreads != 0){
-        yres -= yres%numThreads;
-    }
+//    if (yres%numThreads != 0){
+//        yres -= yres%numThreads;
+//    }
     
     printf ("yres: %d \n", yres);
     
@@ -200,7 +200,7 @@ int main(int argc, char* argv[])
     
     printf ("thread end final 1: %d", arguments[i].threadEnd);
     
-//    arguments[numThreads-1].threadEnd = yres;
+    arguments[numThreads-1].threadEnd = yres;
     
     printf ("thread end final 2: %d", arguments[i].threadEnd);
 
