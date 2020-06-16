@@ -117,9 +117,6 @@ int main(int argc, char* argv[])
   }
     
     clock_t begin = clock();
-
-    //array size: 7127040
-    //7143408
     
   /* The window in the plane. */
     double xmin = atof(argv[1]);
@@ -137,15 +134,13 @@ int main(int argc, char* argv[])
   /* Image size, width is given, height is computed. */
   int xres = atoi(argv[6]);
   int yres = (xres*(ymax-ymin))/(xmax-xmin);
+        
     
-    printf ("yres antes: %d", yres);
-    
+    //handle same workload for all threads
     if (yres%numThreads != 0){
         yres -= yres%numThreads;
     }
-    
-    printf ("yres depois: %d", yres);
-        
+            
   int arraySize = yres * xres * COLOR_SIZE;
     
   colorsToBeWrittenOnFile = (unsigned char *)malloc(arraySize * sizeof(unsigned char));
