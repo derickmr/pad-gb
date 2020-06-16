@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
         arguments[i].dy = dy;
         arguments[i].counter = (arraySize/numThreads) * i;
         arguments[i].threadStart = (yres/numThreads) * i;
-        arguments[i].threadEnd = (yres/numThreads) * (i+1);
+        arguments[i].threadEnd = (yres/numThreads) * (i+1) + (yres%numThreads);
         arguments[i].arraySize = arraySize;
     }
     
