@@ -66,7 +66,7 @@ void *calculate_mandelbrot(void *arg){
     int i,j; /* Pixel counters */
     int k; /* Iteration counter */
     
-    for (j = threadStart; j < threadEnd; j++) {
+    for (j = threadStart; j < threadEnd && counter < arraySize; j++) {
         
         if (counter >= arraySize){
             printf (" counter: %d \n xres: %d\n yres: %d\n ", counter, xres, threadEnd);
