@@ -188,7 +188,7 @@ int main(int argc, char* argv[])
         arguments[i].maxiter = maxiter;
         arguments[i].dx = dx;
         arguments[i].dy = dy;
-        arguments[i].counter = (arraySize/numThreads) * i;
+        arguments[i].counter = (arraySize/numThreads) * i - (arraySize%numThreads);
         arguments[i].threadStart = (yres/numThreads) * i;
         arguments[i].threadEnd = (yres/numThreads) * (i+1);
         arguments[i].arraySize = arraySize;
