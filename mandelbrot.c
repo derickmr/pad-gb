@@ -147,6 +147,10 @@ int main(int argc, char* argv[])
   int xres = atoi(argv[6]);
   int yres = (xres*(ymax-ymin))/(xmax-xmin);
     
+    if (yres%numThreads != 0){
+        yres -= yres%numThreads;
+    }
+    
     printf ("yres: %d \n", yres);
     
   int arraySize = yres * xres * COLOR_SIZE;
