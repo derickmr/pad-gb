@@ -74,7 +74,7 @@ void *calculate_mandelbrot(void *arg){
         }
         
       y = ymax - j * dy;
-      for(i = 0; i < xres; i++) {
+      for(i = 0; i < xres && counter < arraySize; i++) {
       
         double u = 0.0;
         double v= 0.0;
