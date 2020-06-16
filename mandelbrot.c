@@ -71,7 +71,7 @@ void *calculate_mandelbrot(void *arg){
         
         if (counter >= arraySize){
             printf("vai dar xabu\n");
-            printf ("counter: %d": counter);
+            printf ("counter: %d", counter);
         }
         
       y = ymax - j * dy;
