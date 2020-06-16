@@ -135,9 +135,9 @@ int main(int argc, char* argv[])
   int yres = (xres*(ymax-ymin))/(xmax-xmin);
         
     //handle same workload for all threads
-    if (yres%numThreads != 0){
-        yres -= yres%numThreads;
-    }
+//    if (yres%numThreads != 0){
+//        yres -= yres%numThreads;
+//    }
             
   int arraySize = yres * xres * COLOR_SIZE;
     
