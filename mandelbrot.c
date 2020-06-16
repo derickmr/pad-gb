@@ -65,7 +65,7 @@ void *calculate_mandelbrot(void *arg){
     int k; /* Iteration counter */
     
         
-    for (j = threadStart; j < threadEnd && counter < threadEnd * xres; j++) {
+    for (j = threadStart; j < threadEnd && counter < threadEnd * xres * 6; j++) {
       y = ymax - j * dy;
       for(i = 0; i < xres; i++) {
       
