@@ -124,6 +124,11 @@ int main(int argc, char* argv[])
     double ymin = atof(argv[3]);
     double ymax = atof(argv[4]);
     int numThreads = atoi(argv[8]);
+    
+    if (numThreads < 1){
+        printf ("Invalid thread number\n");
+        exit(EXIT_FAILURE);
+    }
 
   /* Maximum number of iterations, at most 65535. */
    uint16_t maxiter = (unsigned short)atoi(argv[5]);
