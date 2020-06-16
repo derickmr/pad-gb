@@ -197,13 +197,9 @@ int main(int argc, char* argv[])
     }
     
     printf ("yres: %d", yres);
-    
-    printf ("thread end final 1: %d", arguments[i].threadEnd);
-    
+        
     arguments[numThreads-1].threadEnd = yres;
     
-    printf ("thread end final 2: %d", arguments[i].threadEnd);
-
     //Computing slaves
     for (i = 1; i < numThreads; i++){
         pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i]));
