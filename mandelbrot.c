@@ -100,12 +100,12 @@ void *calculate_mandelbrot(void *arg){
         else {
           /* exterior */
                     
-            colorsToBeWrittenOnFile[counter++] = k >> 8;
-            colorsToBeWrittenOnFile[counter++] = k & 255;
-            colorsToBeWrittenOnFile[counter++] = k >> 8;
-            colorsToBeWrittenOnFile[counter++] = k & 255;
-            colorsToBeWrittenOnFile[counter++] = k >> 8;
-            colorsToBeWrittenOnFile[counter++] = k & 255;
+            colorsToBeWrittenOnFile[counter < arraySize ? counter++ : arraySize-1] = k >> 8;
+            colorsToBeWrittenOnFile[counter < arraySize ? counter++ : arraySize-1] = k & 255;
+            colorsToBeWrittenOnFile[counter < arraySize ? counter++ : arraySize-1] = k >> 8;
+            colorsToBeWrittenOnFile[counter < arraySize ? counter++ : arraySize-1] = k & 255;
+            colorsToBeWrittenOnFile[counter < arraySize ? counter++ : arraySize-1] = k >> 8;
+            colorsToBeWrittenOnFile[counter < arraySize ? counter++ : arraySize-1] = k & 255;
 
         }
           if (threadEnd == 1160)
