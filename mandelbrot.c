@@ -124,8 +124,6 @@ int main(int argc, char* argv[])
     double ymin = atof(argv[3]);
     double ymax = atof(argv[4]);
     int numThreads = atoi(argv[8]);
-    
-    pthread_t threads[numThreads];
 
   /* Maximum number of iterations, at most 65535. */
    uint16_t maxiter = (unsigned short)atoi(argv[5]);
@@ -133,11 +131,6 @@ int main(int argc, char* argv[])
   /* Image size, width is given, height is computed. */
   int xres = atoi(argv[6]);
   int yres = (xres*(ymax-ymin))/(xmax-xmin);
-        
-    //handle same workload for all threads
-//    if (yres%numThreads != 0){
-//        yres -= yres%numThreads;
-//    }
             
   int arraySize = yres * xres * COLOR_SIZE;
     
@@ -159,6 +152,8 @@ int main(int argc, char* argv[])
     double dx=(xmax-xmin)/xres;
     double dy=(ymax-ymin)/yres;
         
+    //master will compute as well, that is why numThreads-1
+    pthread_t threads[numThreads-1];
     thread_arg arguments[numThreads];
  
     int i, j;
@@ -181,14 +176,14 @@ int main(int argc, char* argv[])
     arguments[numThreads-1].threadEnd = yres;
     
     //Computing slaves
-    for (i = 1; i < numThreads; i++){
-        pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i]));
+    for (i = 0; i < numThreads-1; i++){
+        pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i+1]));
     }
         
     //Master
     calculate_mandelbrot(&(arguments[0]));
     
-    for (i = 1; i < numThreads; i++){
+    for (i = 0; i < numThreads-1; i++){
         pthread_join(threads[i], NULL);
     }
             
