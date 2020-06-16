@@ -67,7 +67,12 @@ void *calculate_mandelbrot(void *arg){
     int k; /* Iteration counter */
     
         
-    for (j = threadStart; j < threadEnd && counter < arraySize; j++) {
+    for (j = threadStart; j < threadEnd; j++) {
+        
+        if (counter >= arraySize){
+            printf("vai dar xabu\n");
+        }
+        
       y = ymax - j * dy;
       for(i = 0; i < xres; i++) {
       
