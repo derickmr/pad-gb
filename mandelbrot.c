@@ -127,7 +127,6 @@ int main(int argc, char* argv[])
     
     pthread_t threads[numThreads];
 
-
   /* Maximum number of iterations, at most 65535. */
    uint16_t maxiter = (unsigned short)atoi(argv[5]);
 
@@ -135,7 +134,6 @@ int main(int argc, char* argv[])
   int xres = atoi(argv[6]);
   int yres = (xres*(ymax-ymin))/(xmax-xmin);
         
-    
     //handle same workload for all threads
     if (yres%numThreads != 0){
         yres -= yres%numThreads;
@@ -174,9 +172,9 @@ int main(int argc, char* argv[])
         arguments[i].maxiter = maxiter;
         arguments[i].dx = dx;
         arguments[i].dy = dy;
-        arguments[i].counter = (arraySize/numThreads) * i - (arraySize%numThreads);
         arguments[i].threadStart = (yres/numThreads) * i;
         arguments[i].threadEnd = (yres/numThreads) * (i+1);
+        arguments[i].counter = arguments[i].threadStart * xres * COLOR_SIZE;
         arguments[i].arraySize = arraySize;
     }
             
