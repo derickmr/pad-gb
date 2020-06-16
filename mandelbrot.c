@@ -58,20 +58,13 @@ void *calculate_mandelbrot(void *arg){
     double dx = targ->dx;
     double dy = targ->dy;
     int arraySize = targ->arraySize;
-    
-    printf ("xres: %d \n xmin: %f \n ymin: %f \n counter: %d \n threadStart: %d \n threadEnd: %d \n dx: %f \n dy: %f \n\n", xres, xmin, ymin, counter, threadStart, threadEnd, dx, dy);
-    
+        
     double x, y; /* Coordinates of the current point in the complex plane. */
     double u, v; /* Coordinates of the iterated point. */
     int i,j; /* Pixel counters */
     int k; /* Iteration counter */
     
     for (j = threadStart; j < threadEnd; j++) {
-        
-        if (counter >= arraySize){
-            printf (" counter: %d \n xres: %d\n yres: %d\n ", counter, xres, threadEnd);
-            printf("vai dar xabu\n");
-        }
         
       y = ymax - j * dy;
       for(i = 0; i < xres; i++) {
@@ -145,18 +138,18 @@ int main(int argc, char* argv[])
   int xres = atoi(argv[6]);
   int yres = (xres*(ymax-ymin))/(xmax-xmin);
     
-//    if (yres%numThreads != 0){
-//        yres -= yres%numThreads;
-//    }
+    printf ("yres antes: %d", yres);
     
-    printf ("yres: %d \n", yres);
+    if (yres%numThreads != 0){
+        yres -= yres%numThreads;
+    }
     
+    printf ("yres depois: %d", yres);
+        
   int arraySize = yres * xres * COLOR_SIZE;
     
   colorsToBeWrittenOnFile = (unsigned char *)malloc(arraySize * sizeof(unsigned char));
     
-  printf ("array size: %d \n", arraySize);
-
   /* The output file name */
   const char* filename = argv[7];
 
@@ -176,9 +169,7 @@ int main(int argc, char* argv[])
     thread_arg arguments[numThreads];
  
     int i, j;
-    
-    printf ("test 1\n");
-    
+        
     //Initializing threads struct
     for (i = 0; i < numThreads; i++){
         arguments[i].xres = xres;
@@ -193,27 +184,21 @@ int main(int argc, char* argv[])
         arguments[i].threadEnd = (yres/numThreads) * (i+1);
         arguments[i].arraySize = arraySize;
     }
-    
-    printf ("yres: %d", yres);
-        
+            
     arguments[numThreads-1].threadEnd = yres;
     
     //Computing slaves
     for (i = 1; i < numThreads; i++){
         pthread_create(&(threads[i]), NULL, calculate_mandelbrot, &(arguments[i]));
     }
-    
-    printf ("test 3\n");
-    
+        
     //Master
     calculate_mandelbrot(&(arguments[0]));
     
     for (i = 1; i < numThreads; i++){
         pthread_join(threads[i], NULL);
     }
-    
-    printf ("test 4\n");
-        
+            
     //Writing result to file
     unsigned char color[COLOR_SIZE];
     
@@ -223,9 +208,7 @@ int main(int argc, char* argv[])
         }
         fwrite(color, COLOR_SIZE, 1, fp);
     }
-    
-    printf ("test 5\n");
-        
+            
   fclose(fp);
   free(colorsToBeWrittenOnFile);
      
