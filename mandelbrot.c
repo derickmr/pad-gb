@@ -39,7 +39,6 @@ typedef struct{
     int threadEnd;
     double dx;
     double dy;
-    int arraySize;
 }thread_arg, *ptr_thread_arg;
 
 
@@ -57,7 +56,6 @@ void *calculate_mandelbrot(void *arg){
     int threadEnd = targ->threadEnd;
     double dx = targ->dx;
     double dy = targ->dy;
-    int arraySize = targ->arraySize;
         
     double x, y; /* Coordinates of the current point in the complex plane. */
     double u, v; /* Coordinates of the iterated point. */
@@ -177,7 +175,6 @@ int main(int argc, char* argv[])
         arguments[i].threadStart = (yres/numThreads) * i;
         arguments[i].threadEnd = (yres/numThreads) * (i+1);
         arguments[i].counter = arguments[i].threadStart * xres * COLOR_SIZE;
-        arguments[i].arraySize = arraySize;
     }
             
     arguments[numThreads-1].threadEnd = yres;
@@ -197,7 +194,7 @@ int main(int argc, char* argv[])
     //Writing result to file
     unsigned char color[COLOR_SIZE];
     
-    for (i = 0; i <= arraySize; ){
+    for (i = 0; i < arraySize; ){
         for (j = 0; j < COLOR_SIZE; j++){
                 color[j] = colorsToBeWrittenOnFile[i++];
         }
