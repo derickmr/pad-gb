@@ -116,8 +116,6 @@ int main(int argc, char* argv[])
     exit(EXIT_FAILURE);
   }
     
-    clock_t begin = clock();
-    
   /* The window in the plane. */
     double xmin = atof(argv[1]);
     double xmax = atof(argv[2]);
@@ -209,11 +207,5 @@ int main(int argc, char* argv[])
   fclose(fp);
   free(colorsToBeWrittenOnFile);
      
-    clock_t end = clock();
-
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    
-    printf ("Execution time: %f \n", time_spent);
-
   return 0;
 }
