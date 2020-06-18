@@ -136,7 +136,11 @@ int main(int argc, char* argv[])
   /* Image size, width is given, height is computed. */
   int xres = atoi(argv[6]);
   int yres = (xres*(ymax-ymin))/(xmax-xmin);
-            
+     
+    if (numThreads > yres){
+        numThreads = yres;
+    }
+    
   int arraySize = yres * xres * COLOR_SIZE;
     
   colorsToBeWrittenOnFile = (unsigned char *)malloc(arraySize * sizeof(unsigned char));
